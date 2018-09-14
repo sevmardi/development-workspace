@@ -5,3 +5,9 @@ My Personal workspace for development
 * [VirtualBox] - Virtualization
 * [Vagrant] - Development environments
 
+
+
+[//]: #
+
+[VirtualBox]: <https://www.virtualbox.org>
+[Vagrant]: <https://github.com/hashicorp/vagrant>
