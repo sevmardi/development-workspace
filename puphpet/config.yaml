@@ -3,8 +3,8 @@ vagrantfile:
     vm:
         provider:
             local:
-                box: puphpet/ubuntu1604-x64
-                box_url: puphpet/ubuntu1404-x64
+                box: bento/ubuntu-16.04
+                box_url: bento/ubuntu-16.04
                 box_version: '0'
                 chosen_virtualizer: virtualbox
                 virtualizers:
@@ -38,7 +38,7 @@ vagrantfile:
                     - puphpet/puppet/manifests
                 options:
                     - '--verbose'
-                    - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
+                    - '--hiera_config /opt/puphpet/puppet/hiera.yaml'
         synced_folder:
             vflsf_rxsqoihfzhxh:
                 owner: www-data
@@ -143,11 +143,6 @@ nginx:
                         - $uri
                         - $uri/
                         - /index.php$is_args$args
-                    fastcgi: ''
-                    fastcgi_index: ''
-                    fastcgi_split_path: ''
-                    proxy: ''
-                    proxy_redirect: ''
                 nxvl_85hv12venejz:
                     www_root: ''
                     location: '~ \.php$'
@@ -157,16 +152,14 @@ nginx:
                         - $uri
                         - $uri/
                         - /index.php$is_args$args
+                    set:
+                        - '$path_info $fastcgi_path_info'
                     fastcgi: '127.0.0.1:9000'
                     fastcgi_index: index.php
                     fastcgi_split_path: '^(.+\.php)(/.*)$'
                     fast_cgi_params_extra:
                         - 'SCRIPT_FILENAME $request_filename'
                         - 'APP_ENV dev'
-                    set:
-                        - '$path_info $fastcgi_path_info'
-                    proxy: ''
-                    proxy_redirect: ''
     proxies: {  }
 apache:
     install: '1'
@@ -182,41 +175,10 @@ apache:
         - proxy_fcgi
         - rewrite
     vhosts:
-        av_eoldb3sd21yh:
-            servername: localhost.dev
-            serveraliases:
-                - www.localhost.dev
-            docroot: /var/www/l5/public
-            port: '80'
-            setenvif:
-                - 'Authorization "(.*)" HTTP_AUTHORIZATION=$1'
-            custom_fragment: ''
-            ssl: '0'
-            ssl_cert: LETSENCRYPT
-            ssl_key: LETSENCRYPT
-            ssl_chain: LETSENCRYPT
-            ssl_certs_dir: LETSENCRYPT
-            ssl_protocol: ''
-            ssl_cipher: ''
-            directories:
-                avd_xojx548051w8:
-                    path: /var/www/awesome
-                    directoryindex: ''
-                    options:
-                        - Indexes
-                        - FollowSymlinks
-                        - MultiViews
-                    allow_override:
-                        - All
-                    require:
-                        - 'all granted'
-                    custom_fragment: ''
-                    provider: directory
         av_m72jfk5ga41o:
             servername: webdev1.dr
             docroot: /var/www/webdev1/
             port: '80'
-            custom_fragment: ''
             ssl: '0'
             ssl_cert: LETSENCRYPT
             ssl_key: LETSENCRYPT
@@ -226,6 +188,7 @@ apache:
             ssl_cipher: ''
             directories:
                 avd_4u8z1ikima52:
+                    provider: directory
                     path: /var/www/webdev1/
                     directoryindex: ''
                     options:
@@ -236,13 +199,10 @@ apache:
                         - All
                     require:
                         - 'all granted'
-                    custom_fragment: ''
-                    provider: directory
         av_dssn126af6dc:
             servername: webdev2.dr
             docroot: /var/www/webdev2/
             port: '80'
-            custom_fragment: ''
             ssl: '0'
             ssl_cert: LETSENCRYPT
             ssl_key: LETSENCRYPT
@@ -252,6 +212,7 @@ apache:
             ssl_cipher: ''
             directories:
                 avd_wzquid676gzv:
+                    provider: directory
                     path: /var/www/webdev2/
                     directoryindex: ''
                     options:
@@ -262,14 +223,37 @@ apache:
                         - All
                     require:
                         - 'all granted'
-                    custom_fragment: ''
+        av_ffl56di3saue:
+            servername: sxro.dr
+            docroot: /var/www/sw-sxro-db/
+            port: '80'
+            ssl: '0'
+            ssl_cert: LETSENCRYPT
+            ssl_key: LETSENCRYPT
+            ssl_chain: LETSENCRYPT
+            ssl_certs_dir: LETSENCRYPT
+            ssl_protocol: ''
+            ssl_cipher: ''
+            directories:
+                avd_ajgjhm0j23pb:
                     provider: directory
+                    path: /var/www/sw-sxro-db/
+                    directoryindex: ''
+                    options:
+                        - Indexes
+                        - FollowSymlinks
+                        - MultiViews
+                    allow_override:
+                        - All
+                    require:
+                        - 'all granted'
 letsencrypt:
     install: '1'
     settings:
         email: ''
         webserver_service: ''
-    domains: {  }
+    domains:
+        domain_jpf: '1'
 php:
     install: '1'
     settings:
@@ -340,11 +324,8 @@ blackfire:
             agent_timeout: '0.25'
             log_file: ''
             log_level: '1'
-xhprof:
-    install: '0'
 wpcli:
     install: '0'
-    version: v0.21.1
 drush:
     install: '0'
     version: 8.0.5
@@ -369,7 +350,7 @@ python:
 nodejs:
     install: '1'
     settings:
-        version: '7'
+        version: '8'
     npm_packages: {  }
 mariadb:
     install: '0'
@@ -384,6 +365,7 @@ mariadb:
     databases:
         mariadbnd_m56j2cpj87ml:
             name: dbname
+            collate: ''
             sql: ''
     grants:
         mariadbng_ka0gyk7t4chb:
@@ -397,20 +379,9 @@ mysql:
         version: '5.7'
         root_password: '1234'
         override_options: {  }
-    users:
-        mysqlnu_h2wchz6mgloc:
-            name: dbuser
-            password: '123'
-    databases:
-        mysqlnd_jzfii8i46nig:
-            name: dbname
-            sql: ''
-    grants:
-        mysqlng_vgj4izqnx978:
-            user: dbuser
-            table: '*.*'
-            privileges:
-                - ALL
+    users: {  }
+    databases: {  }
+    grants: {  }
 postgresql:
     install: '0'
     settings:
@@ -423,19 +394,19 @@ postgresql:
     users: {  }
     grants: {  }
 mongodb:
-    install: '1'
+    install: '0'
     settings:
         bind_ip: 127.0.0.1
         port: '27017'
     globals:
-        version: 2.6.0
+        version: 3.6.2
     databases: {  }
 redis:
-    install: '1'
+    install: '0'
     settings:
         port: '6379'
 sqlite:
-    install: '1'
+    install: '0'
     databases: {  }
 mailhog:
     install: '0'
@@ -457,23 +428,18 @@ beanstalkd:
         binlogsize: '10485760'
     beanstalk_console: 0
 rabbitmq:
-    install: '1'
+    install: '0'
     settings:
         port: '5672'
     users: {  }
     vhosts: {  }
     plugins: {  }
 elastic_search:
-    install: '1'
+    install: '0'
     settings:
         version: 2.3.1
         java_install: true
     instances:
         esi_tl6z6bnp0gex:
             name: es-01
-solr:
-    install: '0'
-    settings:
-        version: 4.10.2
-        port: '8984'
 
